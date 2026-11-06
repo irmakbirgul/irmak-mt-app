@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Translate | Profesyonel Yapay Zeka Çevirisi</title>
+    <!-- Google Fonts: Syne & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons for clean UI buttons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+
+    <header class="navbar">
+        <div class="logo-group">
+            <div class="logo-badge">
+                <span class="badge-dot"></span>
+                <i class="fa-solid fa-bolt-lightning"></i>
+            </div>
+            <div>
+                <h1 class="logo-title">GEMINI<span>TRANSLATE</span></h1>
+                <p class="logo-sub">Yapay Zekâ Destekli Makine Çevirisi</p>
+            </div>
+        </div>
+        <div class="header-badges">
+            <span class="badge"><i class="fa-solid fa-microchip"></i> Gemini AI</span>
+            <span class="badge highlight"><i class="fa-solid fa-lock"></i> Özel Terimce</span>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <!-- Ayar Çubuğu: Alan (Domain) ve Üslup (Style) & Terimce Butonu -->
+        <section class="controls-bar" aria-label="Çeviri Tercihleri">
+            <div class="control-item">
+                <label for="domainSelect"><i class="fa-solid fa-compass"></i> Çeviri Alanı:</label>
+                <div class="custom-select-wrapper">
+                    <select id="domainSelect" class="styled-select">
+                        <option value="general">Genel (Standart, Doğrudan)</option>
+                        <option value="literary">Edebi (Sanatsal, Ahenkli)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="control-item">
+                <label for="styleSelect"><i class="fa-solid fa-feather-pointed"></i> Üslup & Ton:</label>
+                <div class="custom-select-wrapper">
+                    <select id="styleSelect" class="styled-select">
+                        <option value="formal">Resmi (Kurumsal, Saygılı)</option>
+                        <option value="casual">Gündelik (Samimi, Konuşma Dili)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="toggleGlossaryBtn" class="btn-secondary" type="button" aria-expanded="false" title="Özel Terimce (Glossary) Aç/Kapa">
+                <i class="fa-solid fa-book-bookmark"></i>
+                <span>Terimce (Glossary)</span>
+                <span class="badge-count" id="glossaryCount">0</span>
+            </button>
+        </section>
+
+        <!-- Açılır Terimce Paneli -->
+        <section id="glossaryPanel" class="glossary-drawer hidden" aria-label="Terimce Kuralları">
+            <div class="glossary-header">
+                <div class="glossary-title">
+                    <i class="fa-solid fa-list-check"></i>
+                    <strong>Zorunlu Terimce Kuralları</strong>
+                    <span class="hint-tag">Her satıra: <code>kaynak terim = hedef terim</code></span>
+                </div>
+                <button id="closeGlossaryBtn" class="icon-btn" title="Kapat"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <textarea id="glossaryInput" placeholder="Örnek:
+AI = Yapay Zekâ
+prompt = istem
+feature = kabiliyet
+machine learning = makine öğrenimi" rows="3"></textarea>
+            <div class="glossary-footer">
+                <small><i class="fa-solid fa-circle-info"></i> Bu terimler çeviri yapılırken Gemini tarafından birebir kullanılacaktır.</small>
+                <button id="glossarySampleBtn" class="link-btn" type="button">Örnekleri Doldur</button>
+            </div>
+        </section>
+
+        <!-- İki Sütunlu Çeviri Kutusu (DeepL Tarzı) -->
+        <div class="translator-grid">
+            <!-- Sol Sütun: Kaynak Metin -->
+            <div class="card source-card">
+                <div class="card-toolbar">
+                    <div class="lang-selector-group">
+                        <label for="sourceLang" class="sr-only">Kaynak Dil</label>
+                        <select id="sourceLang" class="lang-select">
+                            <option value="İngilizce" selected>İngilizce</option>
+                            <option value="Türkçe">Türkçe</option>
+                            <option value="İspanyolca">İspanyolca</option>
+                            <option value="Almanca">Almanca</option>
+                            <option value="Fransızca">Fransızca</option>
+                            <option value="İtalyanca">İtalyanca</option>
+                            <option value="Rusça">Rusça</option>
+                            <option value="Arapça">Arapça</option>
+                            <option value="Japonca">Japonca</option>
+                        </select>
+                    </div>
+
+                    <div class="toolbar-actions">
+                        <button id="swapLangBtn" class="icon-btn swap-btn" title="Dilleri Değiştir">
+                            <i class="fa-solid fa-arrow-right-arrow-left"></i>
+                        </button>
+                        <button id="clearSourceBtn" class="icon-btn" title="Temizle">
+                            <i class="fa-regular fa-trash-can"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="textarea-wrapper">
+                    <textarea id="sourceText" placeholder="Çevirmek istediğiniz metni buraya yazın veya yapıştırın..." spellcheck="false"></textarea>
+                </div>
+
+                <div class="card-footer">
+                    <span id="charCount" class="counter">0 karakter</span>
+                    <button id="pasteBtn" class="btn-ghost" type="button">
+                        <i class="fa-regular fa-clipboard"></i> Yapıştır
+                    </button>
+                </div>
+            </div>
+
+            <!-- Sağ Sütun: Çeviri Sonucu -->
+            <div class="card target-card">
+                <div class="card-toolbar">
+                    <div class="lang-selector-group">
+                        <label for="targetLang" class="sr-only">Hedef Dil</label>
+                        <select id="targetLang" class="lang-select">
+                            <option value="Türkçe" selected>Türkçe</option>
+                            <option value="İngilizce">İngilizce</option>
+                            <option value="İspanyolca">İspanyolca</option>
+                            <option value="Almanca">Almanca</option>
+                            <option value="Fransızca">Fransızca</option>
+                            <option value="İtalyanca">İtalyanca</option>
+                            <option value="Rusça">Rusça</option>
+                            <option value="Arapça">Arapça</option>
+                            <option value="Japonca">Japonca</option>
+                        </select>
+                    </div>
+
+                    <div class="toolbar-actions">
+                        <span id="statusIndicator" class="status-indicator ready">Hazır</span>
+                    </div>
+                </div>
+
+                <div class="textarea-wrapper output-wrapper">
+                    <div id="loadingOverlay" class="loading-overlay hidden">
+                        <div class="spinner"></div>
+                        <p>Gemini çeviriyor...</p>
+                    </div>
+                    <textarea id="targetText" placeholder="Çeviri burada görünecek..." readonly spellcheck="false"></textarea>
+                </div>
+
+                <div class="card-footer">
+                    <span id="targetCharCount" class="counter">0 karakter</span>
+                    <div class="output-buttons">
+                        <button id="copyBtn" class="btn-ghost" type="button" title="Çeviriyi Kopyala">
+                            <i class="fa-regular fa-copy"></i>
+                            <span id="copyBtnText">Kopyala</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Aksiyon Barı (Çevir Düğmesi) -->
+        <div class="action-dock">
+            <button id="translateBtn" class="btn-primary" type="button">
+                <span class="btn-glow"></span>
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
+                <span>ÇEVİR</span>
+                <kbd class="shortcut-tag">Ctrl + Enter</kbd>
+            </button>
+        </div>
+
+        <!-- Hata ve Bilgilendirme Kartı -->
+        <div id="errorBox" class="alert-box error-box hidden" role="alert">
+            <div class="alert-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div class="alert-content">
+                <h4 id="errorTitle">Bir Hata Oluştu</h4>
+                <p id="errorMessage">Hata detayları burada yer alacak.</p>
+                <div id="errorSolutionBox" class="alert-solution">
+                    <strong>Ne yapmalısınız?</strong>
+                    <span id="errorSolutionText">Lütfen internet bağlantınızı kontrol edin.</span>
+                </div>
+            </div>
+            <button id="closeErrorBtn" class="alert-close" title="Kapat"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </main>
+
+    <footer class="app-footer">
+        <p>Gemini API (Google DeepMind) ile güçlendirilmiştir &bull; Kırmızı & Siyah DeepL Tasarımı</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
